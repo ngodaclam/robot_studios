@@ -1,0 +1,3035 @@
+{
+  "schemaVersion": 1,
+  "id": "personal-robot-02",
+  "name": "Robot 02",
+  "updatedAt": "2026-09-20T01:16:54.827Z",
+  "description": "Robot cá nhân 4WD dùng MKE-R01, ESP32-S3 và Galaxy Note 9. Bố trí 3D sơ bộ theo tài liệu của bạn; SLAM, AI và quét/hút là mục tiêu phát triển, chưa chạy trên phần cứng.",
+  "design": {
+    "profile": "personal-v1",
+    "sourceDocument": "personal_robot_requirements.md",
+    "maxDimensionsLwhMm": [
+      250,
+      220,
+      200
+    ],
+    "maxMassG": 1000,
+    "runtimeMin": [
+      60,
+      90
+    ],
+    "budgetVnd": [
+      1000000,
+      1500000
+    ],
+    "tests": [
+      {
+        "id": "measure",
+        "title": "Đo khung và cân xe",
+        "criterion": "Ghi D×R×C thực tế, tọa độ lỗ và khối lượng TOÀN XE ≤1.000g (không cộng thêm 1kg tải).",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "power",
+        "title": "Kiểm tra nguồn",
+        "criterion": "Đo từng cell, pack, VIN shield và đường 5V cả khi motor khởi động; xác nhận bảo vệ/cầu chì/ngưỡng cắt.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "motor",
+        "title": "Motor và driver",
+        "criterion": "Đo dòng khởi động, dòng tải khi quay tại chỗ, nhiệt driver và sụt áp; chọn driver nếu vượt giới hạn.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "sonar",
+        "title": "Siêu âm 5–100 cm",
+        "criterion": "So khoảng cách với thước; kiểm tra biên độ ECHO đúng bo; ghi sai số và trường hợp mất echo.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "ai",
+        "title": "Camera và AI trên Note 9",
+        "criterion": "Chọn model Android thực tế, đo FPS (mục tiêu ≥15), nhiệt, pin; thử rác/sàn và người trên giường ở hai góc camera.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "link",
+        "title": "Liên lạc và dừng xe",
+        "criterion": "Mất Wi-Fi, lệnh quá hạn hoặc lỗi cảm biến phải dừng motor; chưa có firmware để xác nhận.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "floor",
+        "title": "Chạy 15 phút và vượt gờ",
+        "criterion": "Toàn xe ≤1kg; thử sàn gạch/gỗ, gờ ≤5mm; ghi độ trượt khi quay, độ vững gá và điện áp sau 15 phút.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "runtime",
+        "title": "Thời lượng 60–90 phút",
+        "criterion": "Đo riêng pin xe và Note 9 với tải sử dụng thật; đo lại sau khi thêm LiDAR/cụm hút.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "slam",
+        "title": "SLAM và điều hướng",
+        "criterion": "Chọn cảm biến/thuật toán; kiểm tra bản đồ, sai số định vị, vật cản thấp và điểm mù.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      },
+      {
+        "id": "clean",
+        "title": "Quét / hút thử nghiệm",
+        "criterion": "Chọn cơ cấu, đo dòng và hiệu quả nhặt bụi/rác; cập nhật cân nặng, nguồn và BOM.",
+        "status": "untested",
+        "notes": "",
+        "testedOn": ""
+      }
+    ]
+  },
+  "definitions": [
+    {
+      "id": "mke-r01-kit",
+      "name": "Bộ khung MKE-R01 4WD",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        170,
+        120,
+        190
+      ],
+      "category": "Kết cấu",
+      "sku": "MKE-R01",
+      "manufacturer": "MakerEDU",
+      "description": "Bộ kit đã có. Giá và khối lượng tính một lần cho cả bộ; các chi tiết thuộc kit không cộng lại.",
+      "massG": 500,
+      "priceVnd": 245000,
+      "source": "https://hshop.vn/khung-xe-mke-r01-4wd-robot-car-chassis-tt-motor — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "supplier",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {
+        "Kích thước mâu thuẫn": "Tệp: 256×160×65 mm; nhà cung cấp: 190×170×120 mm (D×R×C). Cần đo đúng phiên bản.",
+        "Khối lượng": "Khoảng 500 g cả kit theo nhà cung cấp; chưa cân.",
+        "Giá tham khảo": "245.000đ / bộ, tra 20/09/2026; không phải báo giá mua mới."
+      },
+      "ports": []
+    },
+    {
+      "id": "mke-r01-frame",
+      "name": "Khung chữ U acrylic MKE-R01",
+      "geometry": "chassis4wd",
+      "dimensionsMm": [
+        125,
+        30,
+        190
+      ],
+      "category": "Kết cấu",
+      "sku": "MKE-R01-FRAME",
+      "manufacturer": null,
+      "description": "Khung acrylic chữ U dày 2 mm. Mô hình dùng kích thước nhà cung cấp; vị trí lỗ và màu cần đối chiếu bộ đang có.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "https://hshop.vn/khung-xe-mke-r01-4wd-robot-car-chassis-tt-motor — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "supplier",
+      "placement": "robot",
+      "color": "#b54839",
+      "specs": {
+        "Độ dày": "2 mm theo nhà cung cấp",
+        "Lỗ lắp": "Chưa có bản vẽ tọa độ lỗ; không dùng mô hình này để khoan."
+      },
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 1
+      }
+    },
+    {
+      "id": "tt-motor",
+      "name": "Động cơ TT trong kit",
+      "geometry": "ttMotor",
+      "dimensionsMm": [
+        23,
+        24,
+        57
+      ],
+      "category": "Truyền động",
+      "sku": "TT-MOTOR",
+      "manufacturer": null,
+      "description": "4 động cơ TT; mỗi cặp cùng bên dự kiến dùng chung một kênh. Dòng kẹt trục chưa đo.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "https://hshop.vn/khung-xe-mke-r01-4wd-robot-car-chassis-tt-motor — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#eac34c",
+      "specs": {
+        "Nguồn motor": "3–9 V theo danh mục kit",
+        "Dòng tải ước tính": "0,4 A/motor theo tài liệu, không phải dòng cực đại",
+        "Kích thước vỏ": "Ước lượng; cần đo đúng động cơ"
+      },
+      "ports": [
+        {
+          "id": "motor",
+          "name": "Hai dây motor",
+          "kind": "power",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            0,
+            9
+          ]
+        },
+        {
+          "id": "shaft",
+          "name": "Trục TT",
+          "kind": "mechanical",
+          "direction": "out",
+          "required": false
+        }
+      ],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 4
+      }
+    },
+    {
+      "id": "tt-wheel",
+      "name": "Bánh xe TT Ø65 mm",
+      "geometry": "wheel",
+      "dimensionsMm": [
+        26,
+        65,
+        65
+      ],
+      "category": "Truyền động",
+      "sku": "TT-WHEEL",
+      "manufacturer": null,
+      "description": "Bánh xe TT Ø65 mm",
+      "massG": null,
+      "priceVnd": null,
+      "source": "https://hshop.vn/khung-xe-mke-r01-4wd-robot-car-chassis-tt-motor — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#26373b",
+      "specs": {
+        "Đường kính": "65 mm theo kit",
+        "Bề rộng": "26 mm — giả định dựng hình",
+        "Lỗ trục": "Cần đo biên dạng và kích thước thực"
+      },
+      "ports": [
+        {
+          "id": "hub",
+          "name": "Lỗ trục TT",
+          "kind": "mechanical",
+          "direction": "in",
+          "required": true
+        }
+      ],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 4
+      }
+    },
+    {
+      "id": "battery-deck",
+      "name": "Tấm gá pin acrylic trong kit",
+      "geometry": "base",
+      "dimensionsMm": [
+        77,
+        2,
+        123
+      ],
+      "category": "Kết cấu",
+      "sku": "BATTERY-DECK",
+      "manufacturer": null,
+      "description": "Tấm gá pin acrylic trong kit",
+      "massG": null,
+      "priceVnd": null,
+      "source": "https://hshop.vn/khung-xe-mke-r01-4wd-robot-car-chassis-tt-motor — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "supplier",
+      "placement": "robot",
+      "color": "#b54839",
+      "specs": {},
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 1
+      }
+    },
+    {
+      "id": "battery-holder",
+      "name": "Khay 2 × 18650 nối tiếp",
+      "geometry": "holder",
+      "dimensionsMm": [
+        42,
+        20,
+        76
+      ],
+      "category": "Nguồn điện",
+      "sku": "BATTERY-HOLDER",
+      "manufacturer": null,
+      "description": "Khay trong kit có công tắc và giắc DC. Đặt phía sau để tiếp cận pin; ray/ngàm quick-swap là phụ kiện cần bổ sung.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "https://hshop.vn/khung-xe-mke-r01-4wd-robot-car-chassis-tt-motor — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#283d43",
+      "specs": {
+        "Nguồn 2S": "7,4 V danh định; 8,4 V đầy",
+        "Dải kiểm tra": "6–8,4 V chỉ là giả định phân tích, KHÔNG phải ngưỡng cắt pin",
+        "Bảo vệ": "Chưa xác nhận BMS, cầu chì, ngưỡng cắt hoặc dòng chịu của khay"
+      },
+      "ports": [
+        {
+          "id": "pack",
+          "name": "Đầu ra hai cell nối tiếp",
+          "kind": "power",
+          "direction": "out",
+          "required": false,
+          "voltageV": [
+            6,
+            8.4
+          ]
+        }
+      ],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 1
+      }
+    },
+    {
+      "id": "sunpower-cell",
+      "name": "Sunpower 18650 2500 mAh",
+      "geometry": "cell",
+      "dimensionsMm": [
+        18,
+        18,
+        65
+      ],
+      "category": "Nguồn điện",
+      "sku": "SUNPOWER-18650-2500",
+      "manufacturer": "Sunpower",
+      "description": "Hai cell đã có, đấu nối tiếp trong khay. Dung lượng bộ vẫn là 2500 mAh, không cộng thành 5000 mAh.",
+      "massG": null,
+      "priceVnd": 45000,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "user",
+      "placement": "robot",
+      "color": "#65a747",
+      "specs": {
+        "Điện áp danh định": "3,7 V/cell",
+        "Giá": "90.000đ / cặp theo tài liệu → 45.000đ/cell, chưa xác minh báo giá",
+        "10C / 25A": "Tuyên bố trong tài liệu; chưa dùng làm định mức nguồn cả hệ thống",
+        "Khối lượng": "Cần cân từng cell"
+      },
+      "ports": []
+    },
+    {
+      "id": "power-switch",
+      "name": "Công tắc tích hợp khay pin",
+      "geometry": "switch",
+      "dimensionsMm": [
+        12,
+        9,
+        16
+      ],
+      "category": "Nguồn điện",
+      "sku": "POWER-SWITCH",
+      "manufacturer": null,
+      "description": "Công tắc tích hợp khay pin",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#27383c",
+      "specs": {},
+      "ports": [
+        {
+          "id": "in",
+          "name": "Pin vào",
+          "kind": "power",
+          "direction": "in",
+          "required": true
+        },
+        {
+          "id": "out",
+          "name": "Nguồn sau công tắc",
+          "kind": "power",
+          "direction": "out",
+          "required": false,
+          "voltageV": [
+            6,
+            8.4
+          ]
+        }
+      ],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 1
+      }
+    },
+    {
+      "id": "mke-m17",
+      "name": "MKE-M17 L9110 I2C",
+      "geometry": "driver",
+      "dimensionsMm": [
+        35,
+        18,
+        45
+      ],
+      "category": "Điện tử",
+      "sku": "MKE-M17",
+      "manufacturer": "MakerEDU",
+      "description": "Driver hai kênh đã có. VIN motor và nguồn logic 5V là hai đường riêng. Chưa chấp nhận vận hành 4 motor có tải trước khi đo dòng.",
+      "massG": null,
+      "priceVnd": 85000,
+      "source": "https://hshop.vn/mach-dieu-khien-dong-co-dc-mke-m17-l9110-i2c-motor-driver-module — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "user",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {
+        "VIN motor": "6–9 V theo module, khác dải IC ghi trong tệp",
+        "Nguồn logic": "5 V",
+        "Dòng liên tục": "0,8 A/kênh; đỉnh 1,5 A theo nhà cung cấp",
+        "I2C": "0x40 mặc định; logic 3,3/5 V",
+        "Gá": "Kích thước từ tệp; tọa độ hai lỗ M3 chưa có"
+      },
+      "ports": [
+        {
+          "id": "vin",
+          "name": "VIN motor 6–9V",
+          "kind": "power",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            6,
+            9
+          ]
+        },
+        {
+          "id": "logic5v",
+          "name": "Nguồn logic 5V",
+          "kind": "power",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": "i2c",
+          "name": "SDA/SCL",
+          "kind": "logic",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            3.3,
+            5
+          ]
+        },
+        {
+          "id": "motors",
+          "name": "MA / MB",
+          "kind": "power",
+          "direction": "out",
+          "required": false,
+          "voltageV": [
+            0,
+            8.4
+          ],
+          "currentA": 1.6,
+          "perChannelCurrentA": 0.8,
+          "channels": 2
+        }
+      ]
+    },
+    {
+      "id": "mke-b01",
+      "name": "MKE-B01 IO Shield",
+      "geometry": "controller",
+      "dimensionsMm": [
+        50,
+        10,
+        60
+      ],
+      "category": "Điện tử",
+      "sku": "MKE-B01",
+      "manufacturer": "MakerEDU",
+      "description": "Shield đã có. Nguồn vào 7–24 V; dải xả 2S có thể xuống dưới 7 V. Cần xử lý nguồn trước khi chạy hết dung lượng pin.",
+      "massG": null,
+      "priceVnd": 90000,
+      "source": "https://github.com/makereduvn/MKE-B01-ESP32-S3-DK-IO-SHIELD — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#136c82",
+      "specs": {
+        "VIN": "7–24 V theo nhà sản xuất",
+        "Nguồn ra": "5 V / 1,5 A; 3,3 V / 0,7 A",
+        "I2C": "SDA IO8 / SCL IO9",
+        "Gá": "Tệp nêu cả cụm 60×50×15 mm và lỗ 52×42 mm; cần đo riêng từng bo"
+      },
+      "ports": [
+        {
+          "id": "vin",
+          "name": "VIN / DC",
+          "kind": "power",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            7,
+            24
+          ]
+        },
+        {
+          "id": "5v",
+          "name": "Đường 5V",
+          "kind": "power",
+          "direction": "out",
+          "required": false,
+          "voltageV": [
+            5,
+            5
+          ],
+          "currentA": 1.5
+        }
+      ]
+    },
+    {
+      "id": "mke-k01",
+      "name": "MKE-K01 ESP32-S3 N4",
+      "geometry": "controller",
+      "dimensionsMm": [
+        26,
+        10,
+        51
+      ],
+      "category": "Điện tử",
+      "sku": "MKE-K01-N4",
+      "manufacturer": "MakerEDU",
+      "description": "Bo điều khiển đã có; cắm trên IO Shield. Kích thước riêng là ước lượng dựng hình, chưa có phép đo.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#1b4147",
+      "specs": {
+        "Vai trò": "Nhận cmd_vel, đọc sonar, điều khiển I2C",
+        "Giao tiếp dự kiến": "Wi-Fi WebSocket; BLE tùy chọn (không dùng Bluetooth Classic SPP)",
+        "Giá": "Tệp ghi 320.000đ cho ESP32 + shield, chưa tách giá bo",
+        "Phần mềm": "Firmware chưa được nạp/kiểm thử trong Robot Studio"
+      },
+      "ports": [
+        {
+          "id": "5v",
+          "name": "Nguồn từ shield",
+          "kind": "power",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": "i2c",
+          "name": "GPIO8 SDA / GPIO9 SCL",
+          "kind": "logic",
+          "direction": "out",
+          "required": false,
+          "voltageV": [
+            3.3,
+            3.3
+          ]
+        },
+        {
+          "id": "trig",
+          "name": "GPIO10 TRIG dự kiến",
+          "kind": "logic",
+          "direction": "out",
+          "required": false,
+          "voltageV": [
+            3.3,
+            3.3
+          ]
+        },
+        {
+          "id": "echo",
+          "name": "GPIO11 ECHO dự kiến",
+          "kind": "logic",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            0,
+            3.3
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mke-s01",
+      "name": "MKE-S01 siêu âm phía trước",
+      "geometry": "sensor",
+      "dimensionsMm": [
+        45,
+        20,
+        20
+      ],
+      "category": "Cảm biến",
+      "sku": "MKE-S01",
+      "manufacturer": "MakerEDU",
+      "description": "Cảm biến đã có. Đối chiếu đúng phiên bản và mức ECHO trên bo trước khi nối GPIO.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "https://github.com/makereduvn/MKE-S01-ULTRASONIC-DISTANCE-SENSOR — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {
+        "Nguồn": "5 V",
+        "Giao tiếp": "Hãng công bố hỗ trợ logic 3,3/5 V; mức ECHO của bo đang có cần xác nhận",
+        "Giới hạn": "Một sonar phía trước không thay thế hệ thống SLAM hoặc cảm biến chống rơi"
+      },
+      "ports": [
+        {
+          "id": "5v",
+          "name": "Nguồn cảm biến",
+          "kind": "power",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            5,
+            5
+          ]
+        },
+        {
+          "id": "trig",
+          "name": "TRIG",
+          "kind": "logic",
+          "direction": "in",
+          "required": true,
+          "voltageV": [
+            3.3,
+            5
+          ]
+        },
+        {
+          "id": "echo",
+          "name": "ECHO — cần xác nhận biên độ",
+          "kind": "logic",
+          "direction": "out",
+          "required": false
+        }
+      ]
+    },
+    {
+      "id": "sonar-bracket",
+      "name": "Gá cảm biến acrylic trong kit",
+      "geometry": "sensorMount",
+      "dimensionsMm": [
+        48,
+        23,
+        22
+      ],
+      "category": "Kết cấu",
+      "sku": "SONAR-BRACKET",
+      "manufacturer": null,
+      "description": "Gá cảm biến acrylic trong kit",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#b54839",
+      "specs": {},
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 1
+      }
+    },
+    {
+      "id": "note9",
+      "name": "Samsung Galaxy Note 9",
+      "geometry": "phone",
+      "dimensionsMm": [
+        161.9,
+        76.4,
+        8.8
+      ],
+      "category": "Điện tử",
+      "sku": "GALAXY-NOTE9",
+      "manufacturer": "Samsung",
+      "description": "Điện thoại nằm ngang, camera sau hướng ra trước và chúc xuống 35°. Dùng pin điện thoại độc lập; không lấy nguồn trực tiếp từ 2S.",
+      "massG": 201,
+      "priceVnd": null,
+      "source": "https://www.samsung.com/my/support/mobile-devices/what-is-the-difference-between-the-galaxy-note8-and-note9/ — đối chiếu 20/09/2026. Tọa độ gá và hình dạng chi tiết là bố trí sơ bộ, chưa đo thực tế.",
+      "verification": "unverified",
+      "dimensionBasis": "supplier",
+      "placement": "robot",
+      "color": "#234f85",
+      "specs": {
+        "Kích thước thân": "161,9×76,4×8,8 mm; không tính ốp",
+        "Pin riêng": "4000 mAh theo tài liệu; thời lượng AI phải đo riêng",
+        "Vai trò dự kiến": "Thị giác, giọng nói, loa báo thức",
+        "Góc nhìn": "35° xuống sàn; nhận diện trên giường cần đổi góc gá và kiểm tra tầm nhìn"
+      },
+      "ports": []
+    },
+    {
+      "id": "phone-cradle",
+      "name": "Gá kẹp Note 9 — cần gia công",
+      "geometry": "phoneMount",
+      "dimensionsMm": [
+        176,
+        85,
+        15
+      ],
+      "category": "Kết cấu",
+      "sku": "PHONE-CRADLE",
+      "manufacturer": null,
+      "description": "Gá tự thiết kế sơ bộ có chừa camera sau và cổng sạc. Kích thước dành cho bố trí, chưa phải bản vẽ in 3D.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#344b50",
+      "specs": {
+        "Góc": "35° từ phương thẳng đứng, camera chúc xuống",
+        "Cần đo": "Ốp máy, mép kẹp, tâm camera, khoảng hở cáp",
+        "Tải": "Cần thử giữ chắc điện thoại khi phanh và quay"
+      },
+      "ports": []
+    },
+    {
+      "id": "phone-support",
+      "name": "Trụ đỡ gá điện thoại — cần gia công",
+      "geometry": "post",
+      "dimensionsMm": [
+        14,
+        52,
+        14
+      ],
+      "category": "Kết cấu",
+      "sku": "PHONE-SUPPORT",
+      "manufacturer": null,
+      "description": "Trụ đỡ gá điện thoại — cần gia công",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#405b61",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "phone-foot",
+      "name": "Chân đế giá điện thoại — cần gia công",
+      "geometry": "base",
+      "dimensionsMm": [
+        65,
+        4,
+        32
+      ],
+      "category": "Kết cấu",
+      "sku": "PHONE-FOOT",
+      "manufacturer": null,
+      "description": "Chân đế giá điện thoại — cần gia công",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#405b61",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "standoff10",
+      "name": "Trụ M3 F-F 10 mm trong kit",
+      "geometry": "post",
+      "dimensionsMm": [
+        6,
+        10,
+        6
+      ],
+      "category": "Kết cấu",
+      "sku": "STANDOFF10",
+      "manufacturer": null,
+      "description": "Trụ M3 F-F 10 mm trong kit",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#dadbd0",
+      "specs": {},
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 10
+      }
+    },
+    {
+      "id": "usb-charger",
+      "name": "Sạc USB 2 ngăn — dùng ngoài xe",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Nguồn điện",
+      "sku": "USB-CHARGER",
+      "manufacturer": null,
+      "description": "Sạc ngoài đã có. Tháo cell khỏi xe để sạc đúng hướng dẫn của sạc; không coi đây là bộ sạc pack 2S.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "offboard",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "jumper-ribbon",
+      "name": "Tép dây M-F 20 cm / 40 sợi",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Phụ kiện",
+      "sku": "JUMPER-RIBBON",
+      "manufacturer": null,
+      "description": "Tép dây M-F 20 cm / 40 sợi",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {
+        "Đơn vị BOM": "1 tép 40 sợi; không tính thành 40 tép"
+      },
+      "ports": []
+    },
+    {
+      "id": "power-wire",
+      "name": "Dây điện đỏ đen — đơn vị mét",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Phụ kiện",
+      "sku": "POWER-WIRE",
+      "manufacturer": null,
+      "description": "Dây điện đỏ đen — đơn vị mét",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {
+        "Đơn vị BOM": "1 mét",
+        "Tiết diện": "Tài liệu đề xuất 22 AWG; kiểm tra dây đang có và dòng thực tế"
+      },
+      "ports": []
+    },
+    {
+      "id": "dc-jack",
+      "name": "Giắc DC 5,5 × 2,1 mm",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Phụ kiện",
+      "sku": "DC-JACK",
+      "manufacturer": null,
+      "description": "Giắc DC 5,5 × 2,1 mm",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {
+        "Số lượng": "2 cái theo tài liệu; kiểm tra đực/cái và cực tính",
+        "Trong kit": "Không mua lặp đầu giắc đã đi liền khay pin"
+      },
+      "ports": []
+    },
+    {
+      "id": "m3x6",
+      "name": "Ốc M3 × 6 trong kit",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Phụ kiện",
+      "sku": "M3X6",
+      "manufacturer": null,
+      "description": "Ốc M3 × 6 trong kit",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {},
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 30
+      }
+    },
+    {
+      "id": "m3x30",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Phụ kiện",
+      "sku": "M3X30",
+      "manufacturer": null,
+      "description": "Bộ ốc tán M3 × 30 trong kit",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {},
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 8
+      }
+    },
+    {
+      "id": "m3x10",
+      "name": "Bộ ốc tán M3 × 10 trong kit",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Phụ kiện",
+      "sku": "M3X10",
+      "manufacturer": null,
+      "description": "Bộ ốc tán M3 × 10 trong kit",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "robot",
+      "color": "#287b86",
+      "specs": {},
+      "ports": [],
+      "includedIn": {
+        "definitionId": "mke-r01-kit",
+        "quantity": 5
+      }
+    },
+    {
+      "id": "pack-protection",
+      "name": "Bảo vệ pin 2S + cầu chì",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "PACK-PROTECTION",
+      "manufacturer": null,
+      "description": "Chọn theo cell, dây, dòng khởi động và ngưỡng cắt; chưa có mã hoặc định mức.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "logic-regulator",
+      "name": "Phương án nguồn ổn định cho logic",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "LOGIC-REGULATOR",
+      "manufacturer": null,
+      "description": "Giải quyết VIN shield khi pin xuống dưới 7V; chọn mạch và cách cấp nguồn trước khi nối.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "quick-swap",
+      "name": "Ray/ngàm khay pin tháo nhanh",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "QUICK-SWAP",
+      "manufacturer": null,
+      "description": "Khay sẵn có chưa được xác nhận có ngàm quick-swap; cần thiết kế và thử cơ khí.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "lidar",
+      "name": "LiDAR 2D — chưa chọn mẫu",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "LIDAR",
+      "manufacturer": null,
+      "description": "Mức 500.000–1.700.000đ trong tệp chỉ là dự trù; chưa biết kích thước, giao tiếp, công suất hay giá mua.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "odometry",
+      "name": "Phương án odometry / IMU",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "ODOMETRY",
+      "manufacturer": null,
+      "description": "Cần chọn cảm biến hoặc giải pháp định vị và thuật toán SLAM; kit hiện tại chưa có dữ liệu odometry.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "brush",
+      "name": "Cụm chổi quét thử nghiệm",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "BRUSH",
+      "manufacturer": null,
+      "description": "Chưa chọn motor, gá, kích thước, dòng và bộ điều khiển.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    },
+    {
+      "id": "vacuum",
+      "name": "Cụm hút + hộp bụi + lọc",
+      "geometry": "accessory",
+      "dimensionsMm": [
+        1,
+        1,
+        1
+      ],
+      "category": "Cần bổ sung",
+      "sku": "VACUUM",
+      "manufacturer": null,
+      "description": "Chưa chọn quạt hút, đường gió, lọc, công suất; chưa tính vào thời lượng pin.",
+      "massG": null,
+      "priceVnd": null,
+      "source": "personal_robot_requirements.md do người dùng cung cấp; chưa đo trên linh kiện đang sở hữu.",
+      "verification": "unverified",
+      "dimensionBasis": "estimate",
+      "placement": "planned",
+      "color": "#287b86",
+      "specs": {},
+      "ports": []
+    }
+  ],
+  "instances": [
+    {
+      "id": "kit",
+      "definitionId": "mke-r01-kit",
+      "assemblyId": "chassis",
+      "name": "Bộ MKE-R01 — vật tư gộp",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "frame",
+      "definitionId": "mke-r01-frame",
+      "assemblyId": "chassis",
+      "name": "Khung acrylic chữ U",
+      "positionMm": [
+        0,
+        48,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        -1,
+        0
+      ],
+      "explodeDistanceMm": 35,
+      "visible": true
+    },
+    {
+      "id": "motor-left-rear",
+      "definitionId": "tt-motor",
+      "assemblyId": "drive",
+      "name": "Động cơ TT trái sau",
+      "positionMm": [
+        -48,
+        32.5,
+        -72.53999999999999
+      ],
+      "rotationDeg": [
+        0,
+        180,
+        0
+      ],
+      "explodeDirection": [
+        -1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 50,
+      "visible": true
+    },
+    {
+      "id": "wheel-left-rear",
+      "definitionId": "tt-wheel",
+      "assemblyId": "drive",
+      "name": "Bánh Ø65 trái sau",
+      "positionMm": [
+        -72,
+        32.5,
+        -60
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        -1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 100,
+      "visible": true
+    },
+    {
+      "id": "motor-left-front",
+      "definitionId": "tt-motor",
+      "assemblyId": "drive",
+      "name": "Động cơ TT trái trước",
+      "positionMm": [
+        -48,
+        32.5,
+        47.46
+      ],
+      "rotationDeg": [
+        0,
+        180,
+        0
+      ],
+      "explodeDirection": [
+        -1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 50,
+      "visible": true
+    },
+    {
+      "id": "wheel-left-front",
+      "definitionId": "tt-wheel",
+      "assemblyId": "drive",
+      "name": "Bánh Ø65 trái trước",
+      "positionMm": [
+        -72,
+        32.5,
+        60
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        -1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 100,
+      "visible": true
+    },
+    {
+      "id": "motor-right-rear",
+      "definitionId": "tt-motor",
+      "assemblyId": "drive",
+      "name": "Động cơ TT phải sau",
+      "positionMm": [
+        48,
+        32.5,
+        -47.46
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 50,
+      "visible": true
+    },
+    {
+      "id": "wheel-right-rear",
+      "definitionId": "tt-wheel",
+      "assemblyId": "drive",
+      "name": "Bánh Ø65 phải sau",
+      "positionMm": [
+        72,
+        32.5,
+        -60
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 100,
+      "visible": true
+    },
+    {
+      "id": "motor-right-front",
+      "definitionId": "tt-motor",
+      "assemblyId": "drive",
+      "name": "Động cơ TT phải trước",
+      "positionMm": [
+        48,
+        32.5,
+        72.53999999999999
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 50,
+      "visible": true
+    },
+    {
+      "id": "wheel-right-front",
+      "definitionId": "tt-wheel",
+      "assemblyId": "drive",
+      "name": "Bánh Ø65 phải trước",
+      "positionMm": [
+        72,
+        32.5,
+        60
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        1,
+        0,
+        0
+      ],
+      "explodeDistanceMm": 100,
+      "visible": true
+    },
+    {
+      "id": "deck",
+      "definitionId": "battery-deck",
+      "assemblyId": "power",
+      "name": "Đế gá pin phía sau",
+      "positionMm": [
+        0,
+        65,
+        -27
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "holder",
+      "definitionId": "battery-holder",
+      "assemblyId": "power",
+      "name": "Khay pin tiếp cận từ phía sau",
+      "positionMm": [
+        0,
+        77,
+        -52
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "cell-a",
+      "definitionId": "sunpower-cell",
+      "assemblyId": "power",
+      "name": "Cell 18650 số 1",
+      "positionMm": [
+        -10,
+        79,
+        -52
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        -0.5,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "cell-b",
+      "definitionId": "sunpower-cell",
+      "assemblyId": "power",
+      "name": "Cell 18650 số 2",
+      "positionMm": [
+        10,
+        79,
+        -52
+      ],
+      "rotationDeg": [
+        0,
+        180,
+        0
+      ],
+      "explodeDirection": [
+        0.5,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "switch",
+      "definitionId": "power-switch",
+      "assemblyId": "power",
+      "name": "Công tắc trên khay pin",
+      "positionMm": [
+        0,
+        77,
+        -98
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        0,
+        -1
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "driver",
+      "definitionId": "mke-m17",
+      "assemblyId": "control",
+      "name": "MKE-M17 · 2 kênh motor",
+      "positionMm": [
+        35,
+        76,
+        52
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "shield",
+      "definitionId": "mke-b01",
+      "assemblyId": "control",
+      "name": "MKE-B01 · IO Shield",
+      "positionMm": [
+        -26,
+        76,
+        48
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "esp32",
+      "definitionId": "mke-k01",
+      "assemblyId": "control",
+      "name": "MKE-K01 · ESP32-S3",
+      "positionMm": [
+        -26,
+        88,
+        48
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 135,
+      "visible": true
+    },
+    {
+      "id": "sonar-bracket",
+      "definitionId": "sonar-bracket",
+      "assemblyId": "vision",
+      "name": "Gá siêu âm phía trước",
+      "positionMm": [
+        0,
+        76,
+        92
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "sonar",
+      "definitionId": "mke-s01",
+      "assemblyId": "vision",
+      "name": "MKE-S01 · nhìn về phía trước",
+      "positionMm": [
+        0,
+        92,
+        96
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        0.5,
+        1
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "phone-foot",
+      "definitionId": "phone-foot",
+      "assemblyId": "vision",
+      "name": "Chân đế giá Note 9",
+      "positionMm": [
+        0,
+        68,
+        -2
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "phone-support",
+      "definitionId": "phone-support",
+      "assemblyId": "vision",
+      "name": "Trụ đỡ Note 9",
+      "positionMm": [
+        0,
+        96,
+        -2
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "cradle",
+      "definitionId": "phone-cradle",
+      "assemblyId": "vision",
+      "name": "Gá kẹp Note 9 · 35°",
+      "positionMm": [
+        0,
+        135,
+        -5
+      ],
+      "rotationDeg": [
+        35,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "phone",
+      "definitionId": "note9",
+      "assemblyId": "vision",
+      "name": "Galaxy Note 9 · camera sau phía trước",
+      "positionMm": [
+        0,
+        135,
+        3
+      ],
+      "rotationDeg": [
+        35,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 155,
+      "visible": true
+    },
+    {
+      "id": "post--45-24",
+      "definitionId": "standoff10",
+      "assemblyId": "control",
+      "name": "Trụ M3 đỡ shield",
+      "positionMm": [
+        -45,
+        68,
+        24
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "post--45-72",
+      "definitionId": "standoff10",
+      "assemblyId": "control",
+      "name": "Trụ M3 đỡ shield",
+      "positionMm": [
+        -45,
+        68,
+        72
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "post--7-24",
+      "definitionId": "standoff10",
+      "assemblyId": "control",
+      "name": "Trụ M3 đỡ shield",
+      "positionMm": [
+        -7,
+        68,
+        24
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "post--7-72",
+      "definitionId": "standoff10",
+      "assemblyId": "control",
+      "name": "Trụ M3 đỡ shield",
+      "positionMm": [
+        -7,
+        68,
+        72
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "usb-charger-1",
+      "definitionId": "usb-charger",
+      "assemblyId": "service",
+      "name": "Sạc USB 2 ngăn — dùng ngoài xe",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "jumper-ribbon-1",
+      "definitionId": "jumper-ribbon",
+      "assemblyId": "control",
+      "name": "Tép dây M-F 20 cm / 40 sợi",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "power-wire-1",
+      "definitionId": "power-wire",
+      "assemblyId": "power",
+      "name": "Dây điện đỏ đen — đơn vị mét",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "power-wire-2",
+      "definitionId": "power-wire",
+      "assemblyId": "power",
+      "name": "Dây điện đỏ đen — đơn vị mét",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "dc-jack-1",
+      "definitionId": "dc-jack",
+      "assemblyId": "power",
+      "name": "Giắc DC 5,5 × 2,1 mm",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "dc-jack-2",
+      "definitionId": "dc-jack",
+      "assemblyId": "power",
+      "name": "Giắc DC 5,5 × 2,1 mm",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-1",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-2",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-3",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-4",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-5",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-6",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-7",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-8",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-9",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-10",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-11",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-12",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-13",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-14",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-15",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x6-16",
+      "definitionId": "m3x6",
+      "assemblyId": "chassis",
+      "name": "Ốc M3 × 6 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-1",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-2",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-3",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-4",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-5",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-6",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-7",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x30-8",
+      "definitionId": "m3x30",
+      "assemblyId": "drive",
+      "name": "Bộ ốc tán M3 × 30 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x10-1",
+      "definitionId": "m3x10",
+      "assemblyId": "chassis",
+      "name": "Bộ ốc tán M3 × 10 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x10-2",
+      "definitionId": "m3x10",
+      "assemblyId": "chassis",
+      "name": "Bộ ốc tán M3 × 10 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x10-3",
+      "definitionId": "m3x10",
+      "assemblyId": "chassis",
+      "name": "Bộ ốc tán M3 × 10 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x10-4",
+      "definitionId": "m3x10",
+      "assemblyId": "chassis",
+      "name": "Bộ ốc tán M3 × 10 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "m3x10-5",
+      "definitionId": "m3x10",
+      "assemblyId": "chassis",
+      "name": "Bộ ốc tán M3 × 10 trong kit",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "pack-protection-1",
+      "definitionId": "pack-protection",
+      "assemblyId": "planned",
+      "name": "Bảo vệ pin 2S + cầu chì",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "logic-regulator-1",
+      "definitionId": "logic-regulator",
+      "assemblyId": "planned",
+      "name": "Phương án nguồn ổn định cho logic",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "quick-swap-1",
+      "definitionId": "quick-swap",
+      "assemblyId": "planned",
+      "name": "Ray/ngàm khay pin tháo nhanh",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "lidar-1",
+      "definitionId": "lidar",
+      "assemblyId": "planned",
+      "name": "LiDAR 2D — chưa chọn mẫu",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "odometry-1",
+      "definitionId": "odometry",
+      "assemblyId": "planned",
+      "name": "Phương án odometry / IMU",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "brush-1",
+      "definitionId": "brush",
+      "assemblyId": "planned",
+      "name": "Cụm chổi quét thử nghiệm",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    },
+    {
+      "id": "vacuum-1",
+      "definitionId": "vacuum",
+      "assemblyId": "planned",
+      "name": "Cụm hút + hộp bụi + lọc",
+      "positionMm": [
+        0,
+        0,
+        0
+      ],
+      "rotationDeg": [
+        0,
+        0,
+        0
+      ],
+      "explodeDirection": [
+        0,
+        1,
+        0
+      ],
+      "explodeDistanceMm": 80,
+      "visible": true
+    }
+  ],
+  "connections": [
+    {
+      "id": "c-1",
+      "kind": "power",
+      "from": {
+        "instanceId": "holder",
+        "portId": "pack"
+      },
+      "to": {
+        "instanceId": "switch",
+        "portId": "in"
+      }
+    },
+    {
+      "id": "c-2",
+      "kind": "power",
+      "from": {
+        "instanceId": "switch",
+        "portId": "out"
+      },
+      "to": {
+        "instanceId": "driver",
+        "portId": "vin"
+      }
+    },
+    {
+      "id": "c-3",
+      "kind": "power",
+      "from": {
+        "instanceId": "switch",
+        "portId": "out"
+      },
+      "to": {
+        "instanceId": "shield",
+        "portId": "vin"
+      }
+    },
+    {
+      "id": "c-4",
+      "kind": "power",
+      "from": {
+        "instanceId": "shield",
+        "portId": "5v"
+      },
+      "to": {
+        "instanceId": "driver",
+        "portId": "logic5v"
+      }
+    },
+    {
+      "id": "c-5",
+      "kind": "power",
+      "from": {
+        "instanceId": "shield",
+        "portId": "5v"
+      },
+      "to": {
+        "instanceId": "esp32",
+        "portId": "5v"
+      }
+    },
+    {
+      "id": "c-6",
+      "kind": "power",
+      "from": {
+        "instanceId": "shield",
+        "portId": "5v"
+      },
+      "to": {
+        "instanceId": "sonar",
+        "portId": "5v"
+      }
+    },
+    {
+      "id": "c-7",
+      "kind": "logic",
+      "from": {
+        "instanceId": "esp32",
+        "portId": "i2c"
+      },
+      "to": {
+        "instanceId": "driver",
+        "portId": "i2c"
+      }
+    },
+    {
+      "id": "c-8",
+      "kind": "logic",
+      "from": {
+        "instanceId": "esp32",
+        "portId": "trig"
+      },
+      "to": {
+        "instanceId": "sonar",
+        "portId": "trig"
+      }
+    },
+    {
+      "id": "c-9",
+      "kind": "logic",
+      "from": {
+        "instanceId": "sonar",
+        "portId": "echo"
+      },
+      "to": {
+        "instanceId": "esp32",
+        "portId": "echo"
+      }
+    },
+    {
+      "id": "c-10",
+      "kind": "power",
+      "from": {
+        "instanceId": "driver",
+        "portId": "motors"
+      },
+      "to": {
+        "instanceId": "motor-left-front",
+        "portId": "motor"
+      },
+      "channel": "left"
+    },
+    {
+      "id": "c-11",
+      "kind": "mechanical",
+      "from": {
+        "instanceId": "motor-left-front",
+        "portId": "shaft"
+      },
+      "to": {
+        "instanceId": "wheel-left-front",
+        "portId": "hub"
+      }
+    },
+    {
+      "id": "c-12",
+      "kind": "power",
+      "from": {
+        "instanceId": "driver",
+        "portId": "motors"
+      },
+      "to": {
+        "instanceId": "motor-left-rear",
+        "portId": "motor"
+      },
+      "channel": "left"
+    },
+    {
+      "id": "c-13",
+      "kind": "mechanical",
+      "from": {
+        "instanceId": "motor-left-rear",
+        "portId": "shaft"
+      },
+      "to": {
+        "instanceId": "wheel-left-rear",
+        "portId": "hub"
+      }
+    },
+    {
+      "id": "c-14",
+      "kind": "power",
+      "from": {
+        "instanceId": "driver",
+        "portId": "motors"
+      },
+      "to": {
+        "instanceId": "motor-right-front",
+        "portId": "motor"
+      },
+      "channel": "right"
+    },
+    {
+      "id": "c-15",
+      "kind": "mechanical",
+      "from": {
+        "instanceId": "motor-right-front",
+        "portId": "shaft"
+      },
+      "to": {
+        "instanceId": "wheel-right-front",
+        "portId": "hub"
+      }
+    },
+    {
+      "id": "c-16",
+      "kind": "power",
+      "from": {
+        "instanceId": "driver",
+        "portId": "motors"
+      },
+      "to": {
+        "instanceId": "motor-right-rear",
+        "portId": "motor"
+      },
+      "channel": "right"
+    },
+    {
+      "id": "c-17",
+      "kind": "mechanical",
+      "from": {
+        "instanceId": "motor-right-rear",
+        "portId": "shaft"
+      },
+      "to": {
+        "instanceId": "wheel-right-rear",
+        "portId": "hub"
+      }
+    }
+  ],
+  "assemblies": [
+    {
+      "id": "chassis",
+      "name": "01 · Khung MKE-R01",
+      "description": "Acrylic chữ U và vật tư trong bộ kit",
+      "visible": true
+    },
+    {
+      "id": "drive",
+      "name": "02 · Truyền động 4WD",
+      "description": "Bốn TT motor, hai nhóm trái/phải",
+      "visible": true
+    },
+    {
+      "id": "power",
+      "name": "03 · Nguồn 2S phía sau",
+      "description": "Hai cell riêng, khay pin và công tắc",
+      "visible": true
+    },
+    {
+      "id": "control",
+      "name": "04 · ESP32 & điều khiển",
+      "description": "MKE-K01, MKE-B01 và MKE-M17",
+      "visible": true
+    },
+    {
+      "id": "vision",
+      "name": "05 · Note 9 & cảm biến",
+      "description": "Camera hướng trước/xuống 35°",
+      "visible": true
+    },
+    {
+      "id": "planned",
+      "name": "06 · Phần cần bổ sung",
+      "description": "Chưa chọn linh kiện; chỉ có trong BOM",
+      "visible": true
+    },
+    {
+      "id": "service",
+      "name": "07 · Dụng cụ ngoài xe",
+      "description": "Không tính vào khối lượng xe",
+      "visible": true
+    }
+  ],
+  "inventory": {
+    "mke-r01-kit": 1,
+    "mke-k01": 1,
+    "mke-b01": 1,
+    "mke-m17": 1,
+    "mke-s01": 1,
+    "sunpower-cell": 2,
+    "note9": 1,
+    "usb-charger": 1,
+    "jumper-ribbon": 1,
+    "power-wire": 2,
+    "dc-jack": 2
+  },
+  "priceOverrides": {}
+}
