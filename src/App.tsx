@@ -43,6 +43,7 @@ import { useWebMcp } from './domain/webmcp';
 import {
   LIBRARY_KEY,
   loadLibrary,
+  openDefaultRobot,
   saveLibrary,
   initialLibrary,
   updateActiveRobot,
@@ -58,7 +59,11 @@ const SimulationPanel = lazy(() =>
 export default function App() {
   const [initial] = useState(() => {
     try {
-      return { library: loadLibrary(), error: '', raw: localStorage.getItem(LIBRARY_KEY) };
+      return {
+        library: openDefaultRobot(loadLibrary()),
+        error: '',
+        raw: localStorage.getItem(LIBRARY_KEY),
+      };
     } catch (error) {
       return {
         library: initialLibrary(),

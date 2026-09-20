@@ -6,6 +6,7 @@ import {
   initialLibrary,
   LIBRARY_KEY,
   loadLibrary,
+  openDefaultRobot,
   saveLibrary,
   switchRobot,
   updateActiveRobot,
@@ -22,6 +23,30 @@ const memory = () => {
   };
 };
 describe('Multi-robot library', () => {
+  it('opens Robot 02 first on startup without losing edits or preventing later switching', () => {
+    const storage = memory();
+    const library = loadLibrary(storage);
+    const rover = library.projects[0];
+    const personal = library.projects[1];
+    personal.design!.tests[0].notes = 'Giữ nhật ký';
+    const before = structuredClone(library);
+    const startup = openDefaultRobot(library);
+    expect(startup.activeId).toBe(personal.id);
+    expect(startup.projects).toEqual([personal, rover]);
+    expect(library).toEqual(before);
+    const switched = switchRobot(startup, rover.id);
+    expect(switched.activeId).toBe(rover.id);
+    saveLibrary(switched, storage);
+    expect(openDefaultRobot(loadLibrary(storage))).toEqual(startup);
+  });
+  it('recognizes a renamed Robot 02 and leaves libraries without a personal robot intact', () => {
+    const library = loadLibrary(memory());
+    library.projects[1].id = 'renamed-robot';
+    library.projects[1].name = 'Bạn đồng hành';
+    expect(openDefaultRobot(library).activeId).toBe('renamed-robot');
+    const roverOnly = initialLibrary();
+    expect(openDefaultRobot(roverOnly)).toBe(roverOnly);
+  });
   it('starts an empty browser with Rover 01 and the complete personal Robot 02', () => {
     const storage = memory();
     const library = loadLibrary(storage);

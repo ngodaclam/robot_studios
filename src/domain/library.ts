@@ -18,6 +18,19 @@ const librarySchema = z
       ctx.addIssue({ code: 'custom', message: 'Robot đang mở không tồn tại.' });
   });
 export type RobotLibrary = z.infer<typeof librarySchema>;
+/** Start with Robot 02 while preserving all saved robot data. */
+export function openDefaultRobot(library: RobotLibrary): RobotLibrary {
+  const personal =
+    library.projects.find(
+      (p) => p.id === 'personal-robot-02' && p.design?.profile === 'personal-v1',
+    ) ?? library.projects.find((p) => p.design?.profile === 'personal-v1');
+  if (!personal) return library;
+  return {
+    ...library,
+    activeId: personal.id,
+    projects: [personal, ...library.projects.filter((p) => p.id !== personal.id)],
+  };
+}
 export function initialLibrary(project = createSampleProject()): RobotLibrary {
   return { version: 1, activeId: project.id, projects: [project] };
 }
